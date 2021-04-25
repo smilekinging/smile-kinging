@@ -1,0 +1,72 @@
+对于Josephus problem来说，我们一般求解可以想到的是两种方法，一种是数组模拟，另一种是使用链表
+以下是两种方法的具体实现我就不多赘述了：
+数组模拟方式实现：
+  int n,m,a[110]={0},i=1,j,count=0;
+	scanf("%d%d",&n,&m);
+	while(j<=100100){
+		if(i>n){i=1;}
+		if(a[i]!=1){count++;}
+		if(count%m==0&&a[i]!=1){
+			printf("%d ",i);
+			a[i]=1;
+		}
+		j++;
+		i++;
+	}
+链表方式实现:
+  结构体：
+    struct node{
+     	int num;
+	    struct node *next;
+    };
+  代码段：
+	  int n,i,m;
+	  scanf("%d%d",&n,&m);
+	  struct node *p,*q;
+	  struct node *head=NULL;
+	  for(i=1;i<=n;i++){
+		  p=(struct node*)malloc(sizeof(struct node));
+		  p->num=i;
+		  if(head==NULL){
+			  head=p;
+			  q=p;
+		  }else{
+			  q->next=p;
+			  q=p;
+		  }	
+	  }
+	  q->next=head;
+	  struct node *t,*f;
+	  p=head;
+	  int count=1;
+	  while(p->num!=p->next->num){
+		  if(count==m){
+			  printf("%d ",p->num);
+			  t->next=p->next;
+			  f=p;
+			  p=p->next;
+			  count=1;
+			  free(f);
+		  }else{
+			  t=p;
+			  p=p->next;
+			  count++;
+		  }
+	  }
+	  printf("%d",p->num);
+	  free(p);
+下面具体讲解以下递归实现流程：
+  首先，我们先将人员编号为1~n，那么报数到m的那个人就会被杀死，那么接着后面的报数又会从1开始，而之前的m-1的人被重新分配到了n-1的位置。
+  那么就可以进行第二次循环，同时如果顺序计算的话那这个人编号也就会被编制到新出现报数k+（m-1），一次类推，不太难可以推算出最后的位置必定为oldpoint=（nowpoint+m-1）%n+1
+  那就可以进行递归实现了：
+    int find(int n,int m){
+      if(n==1)return n;
+      else{
+        return (find(n-1,m)+m-1)%n+1;
+      }
+    }
+  简化为：
+    int find(int n,int m){
+      return n==1?n:((find(n-1,m)+m-1)%n+1);
+    }
+  那么整体流程结束，重在推导。
